@@ -10,12 +10,15 @@ public class ResetPassword extends JPanel implements ActionListener {
   private JLabel jLabel1;
   private JTextField emailField;
   private GridBagConstraints c;
+  private static final Font FRANKLIN = new Font("Franklin Gothic Book", Font.PLAIN, 12);
   
   public ResetPassword() {
     super(new GridBagLayout());
     jLabel1 = new JLabel("Please enter the email address associated with your account:");
     jLabel1.setForeground(Color.WHITE);
+    jLabel1.setFont(FRANKLIN);
     emailField = new JTextField(20);
+    emailField.setFont(FRANKLIN);
     emailField.addActionListener(this);
     
     setBackground(new Color(0, 90, 139));
