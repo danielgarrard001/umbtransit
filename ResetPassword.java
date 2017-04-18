@@ -32,22 +32,34 @@ public class ResetPassword extends JPanel implements ActionListener {
   }
   
   public void actionPerformed(ActionEvent evt) {
-    String emailAddress = emailField.getText();
-    
     remove(emailField);
     jLabel1.setText("Please wait.");
+    jLabel1.setIcon(new ImageIcon("loading_icon.png"));
     repaint();
     
-    // Try to send an email to the specified address; display a positive message for success and negative for failure.
-    try {
-      sendResetEmailTo(emailAddress);
-      jLabel1.setText("<html>An email with a temporary password has been sent to \"" + emailAddress + "\"</html>");
-    } catch(MessagingException mex) {
-      jLabel1.setText("<html>Sorry, there was a problem sending an email to \"" + emailAddress + "\".</html>");
-    }
+    String emailAddress = emailField.getText();
+    
+    new Thread(createRunnable(emailAddress)).start();
+    
     
     //implement button to return to login page here
     repaint();
+  }
+  
+  private Runnable createRunnable(final String toAddress) {
+    return new Runnable() {
+      public void run() {
+        // Try to send an email to the specified address; display a positive message for success and negative for failure.
+        try {
+          sendResetEmailTo(toAddress);
+          jLabel1.setIcon(null);
+          jLabel1.setText("<html>An email with a temporary password has been sent to \"" + toAddress + "\"</html>");
+        } catch(MessagingException mex) {
+          jLabel1.setIcon(null);
+          jLabel1.setText("<html>Sorry, there was a problem sending an email to \"" + toAddress + "\".</html>");
+        }
+      }
+    };
   }
   
   private static void createAndShowGUI() {
@@ -64,12 +76,10 @@ public class ResetPassword extends JPanel implements ActionListener {
   private static class SMTPAuthenticator extends Authenticator
   {
     private PasswordAuthentication authentication;
-    
     public SMTPAuthenticator(String login, String password)
     {
       authentication = new PasswordAuthentication(login, password);
     }
-    
     @Override
     protected PasswordAuthentication getPasswordAuthentication()
     {
