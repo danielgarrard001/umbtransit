@@ -5,21 +5,45 @@ import javax.swing.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-public class ResetPassword extends JPanel implements ActionListener {
+public class ResetPassword extends JPanel {
   
+  private JFrame frame;
   private JLabel jLabel1;
   private JTextField emailField;
   private GridBagConstraints c;
+  private JButton button;
   private static final Font FRANKLIN = new Font("Franklin Gothic Book", Font.PLAIN, 12);
   
   public ResetPassword() {
     super(new GridBagLayout());
+    
     jLabel1 = new JLabel("Please enter the email address associated with your account:");
     jLabel1.setForeground(Color.WHITE);
     jLabel1.setFont(FRANKLIN);
+    
     emailField = new JTextField(20);
     emailField.setFont(FRANKLIN);
-    emailField.addActionListener(this);
+    emailField.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        remove(emailField);
+        jLabel1.setText("Please wait.");
+        //jLabel1.setIcon(new ImageIcon("name of icon goes here"));
+        repaint();
+        
+        String emailAddress = emailField.getText();
+        
+        new Thread(createRunnable(emailAddress)).start();
+      }
+    });
+    
+    button = new JButton("Back");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        frame.removeAll();
+        //add code to return to the login page
+        frame.pack();
+      }
+    });
     
     setBackground(new Color(0, 90, 139));
     
@@ -29,21 +53,9 @@ public class ResetPassword extends JPanel implements ActionListener {
     c.insets = new Insets(10, 10, 10, 10);
     add(jLabel1, c);
     add(emailField, c);
-  }
-  
-  public void actionPerformed(ActionEvent evt) {
-    remove(emailField);
-    jLabel1.setText("Please wait.");
-    jLabel1.setIcon(new ImageIcon("loading_icon.png"));
-    repaint();
     
-    String emailAddress = emailField.getText();
-    
-    new Thread(createRunnable(emailAddress)).start();
-    
-    
-    //implement button to return to login page here
-    repaint();
+    c.fill = GridBagConstraints.NONE;
+    add(button, c);
   }
   
   private Runnable createRunnable(final String toAddress) {
@@ -62,27 +74,24 @@ public class ResetPassword extends JPanel implements ActionListener {
     };
   }
   
-  private static void createAndShowGUI() {
-    JFrame frame = new JFrame("Reset Password");
+  private void createAndShowGUI() {
+    frame = new JFrame("Reset Password");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
-    frame.add(new ResetPassword());
+    frame.add(this);
     
     frame.pack();
     frame.setBounds(300, 150, 450, 750);
     frame.setVisible(true);
   }
   
-  private static class SMTPAuthenticator extends Authenticator
-  {
+  private static class SMTPAuthenticator extends Authenticator {
     private PasswordAuthentication authentication;
-    public SMTPAuthenticator(String login, String password)
-    {
+    public SMTPAuthenticator(String login, String password) {
       authentication = new PasswordAuthentication(login, password);
     }
     @Override
-    protected PasswordAuthentication getPasswordAuthentication()
-    {
+    protected PasswordAuthentication getPasswordAuthentication() {
       return authentication;
     }
   }
@@ -116,7 +125,7 @@ public class ResetPassword extends JPanel implements ActionListener {
   public static void main(String[] args) {
     javax.swing.SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        createAndShowGUI();
+        new ResetPassword().createAndShowGUI();
       }
     });
   }
