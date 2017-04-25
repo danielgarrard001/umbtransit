@@ -37,20 +37,15 @@ public class ResetPassword extends JPanel {
     });
     
     button = new JButton("Back");
-    button.setBackground(UMBParkingApp.UMB_LIGHT_BLUE);
-    button.setForeground(UMBParkingApp.UMB_BLUE);
-    button.setFont(UMBParkingApp.FG_DEMI);
-    button.setContentAreaFilled(false);
-    button.setOpaque(true);
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        
+        frame.removeAll();
         //add code to return to the login page
-        
+        frame.pack();
       }
     });
     
-    setBackground(UMBParkingApp.UMB_BLUE);
+    setBackground(new Color(0, 90, 139));
     
     c = new GridBagConstraints();
     c.gridwidth = GridBagConstraints.REMAINDER;
@@ -99,10 +94,6 @@ public class ResetPassword extends JPanel {
     protected PasswordAuthentication getPasswordAuthentication() {
       return authentication;
     }
-  }
-  
-  public JButton getButton() {
-    return button;
   }
   
   private static void sendResetEmailTo(String toAddress) throws MessagingException {
